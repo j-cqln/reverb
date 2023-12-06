@@ -1,0 +1,24 @@
+{% if reviews|length > 0 %}
+    {% for review in reviews %}
+        <a href="/content/{{review.content_type}}/{{review.content_id}}" class="card-link">
+            <div class="review-card">
+                <img class="review-content-image" src="{{review.img}}">
+                <div class="review-content">
+                    <div>
+                        <span class="review-content-name">
+                            <strong>{{review.name}}</strong>
+                                {% if review.artists|length > 0 %}
+                                    by {{ review.artists|join(", ") }}
+                                {% endif %}
+                            <em>{{review.content_type}}</em>
+                        </span>
+                        <span class="review-rating">Rating: {{review.rating}}/5</span>
+                    </div>
+                    <p class="review-text">
+                    {{review.text}}
+                    </p>
+                </div>
+            </div>
+        </a>
+    {% endfor %}
+{% endif %}

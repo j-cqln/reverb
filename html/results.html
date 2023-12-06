@@ -1,0 +1,66 @@
+<!-- Formatting results (container of content cards) -->
+{% if results|length > 0 %}
+    <div class="result-cards">
+        {% for result in results %}
+            <div class="result-card" id="result-card">
+                <a href="/content/{{result.content_type}}/{{result.content_id}}">
+                    <span class="link-span"></span>
+                </a>
+
+                <!-- Profile picture for users, item image for other results -->
+                {% if result.content_type == "user" %}
+                    <div class="profile-image card-profile-image search-profile-image" id="profile-pic-{{ result.content_id }}"></div>
+                {% else %}
+                    <img class="image" src="{{result.image}}">
+                {% endif %}
+
+                <div class="content">
+                    <div class="title">{{result.name}}</div>
+
+                    <!-- Artists/creators when not user -->
+                    {% if result.content_type != "user" %}
+                        <div class="text">
+                            {% if result.artists|length > 0 %}
+                                {{ result.artists|join(", ") }}
+                            {% else %}
+                                None
+                            {% endif %} 
+                        </div>
+                    {% endif %}
+
+                    <div class="text">
+                        <em>{{result.content_type}}</em>
+                    </div>
+
+                    <!-- When used to display items in a collection -->
+                    {% if content_type and content_type == "collection" %}
+                        <!-- If current user owns this collection, display delete button -->
+                        {% if current_user.id == collection.user_id %}
+                            <div class="delete-content-from-collection">
+                                <form onclick="event.stopPropagation();" method="POST" action="{{ url_for('delete_from_collection') }}">
+                                    <input type="hidden" name="collection_id" value="{{ collection.id }}">
+                                    <input type="hidden" name="spotify_id" value="{{ result.content_id }}">
+                                    <input type="hidden" name="spotify_type" value="{{ result.content_type }}">
+
+                                    <button type="button submit" class="delete-content-button">Delete</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% endif %}
+
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $(".result-card").each(function() {
+            var username = $(this).find(".title").text().trim();
+            var firstLetter = username.charAt(0).toUpperCase();
+            $(this).find(".card-profile-image").text(firstLetter);
+        });
+    });
+</script>

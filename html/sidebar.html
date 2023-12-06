@@ -1,0 +1,64 @@
+<!-- Responsive sidebar -->
+<div class="sidebar" id="sidebar">
+    <div>
+        <div class="sidebar-title">
+            <a class="link-a" href="{{  url_for('index')  }}">
+                <img class="app-logo" src="/static/assets/app/logo.png"><p class="app-name">Reverb</p>
+                <a href="javascript:void(0)" class="close-sidebar" onclick="closeSidebar()">×</a>
+            </a>
+        </div>
+
+        <a class="sidebar-link" href="/home">home</a>
+        <a class="sidebar-link" href="/search">search</a>
+        <a class="sidebar-link" href="/user/{{current_user.id}}">profile</a>
+
+        {% if random_user %}
+            <a class="sidebar-link" href="/user/{{random_user.id}}">random profile</a>
+        {% endif %}
+    </div>
+
+    <form action="{{ url_for('logout') }}" method="POST">
+        <button type="submit" id="logout-button" class="sidebar-link sidebar-logout">log out</button>
+    </form>
+</div>
+
+<button class="open-sidebar" onclick="openSidebar()">☰</button>
+
+<script>
+    // Opening sidebar
+    function openSidebar() {
+        document.getElementById("sidebar").style.display = "flex";
+
+        if (window.innerWidth <= 1250) {
+            document.getElementById("sidebar").style.width = "250px";
+            document.querySelector(".main-content").style.marginLeft = "35px";
+        } else {
+            document.getElementById("sidebar").style.width = "15%";
+            document.querySelector(".main-content").style.marginLeft = "15%";
+        }
+    }
+    
+    // Closing sidebar
+    function closeSidebar() {
+        document.getElementById("sidebar").style.display = "none";
+        document.getElementById("sidebar").style.width = "0";
+        document.querySelector(".main-content").style.marginLeft = "35px";
+    }
+
+    // Check sidebar open/close based on window size
+    function checkSidebar() {
+        if (window.innerWidth <= 1250 && document.getElementById("sidebar").style.display != "none") {
+            closeSidebar();
+
+            // To-do: differentiate manual and auto close
+            document.getElementById("sidebar").style.width = "250px";
+        }
+
+        if (window.innerWidth > 1250 && document.getElementById("sidebar").style.display == "none" && document.getElementById("sidebar").style.width != "0") {
+            openSidebar();
+        }
+    }
+
+    // Check sidebar on window resize
+    window.addEventListener('resize', checkSidebar);
+</script>

@@ -1,0 +1,7 @@
+<!-- Wrapper for search results to display prompt text when no results -->
+{% if results|length > 0 %}
+    {% include "results.html" %}
+{% else %}
+    <p class="p-search-prompt">Play what you love</p>
+    <p class="p-search-prompt">Search for songs, albums, collections, and more</p>
+{% endif %}

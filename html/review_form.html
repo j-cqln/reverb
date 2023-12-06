@@ -1,0 +1,35 @@
+<button type="button" class="form-button small-button" id="add-review-button" onClick="showForm()">Add a review +</button>
+
+<!-- Review creation form -->
+<form action="{{ url_for('submit_review', content_type=content_type, content_id=content_id) }}" method="post" id="add-review-form">
+    <h3 class="content-subheader">Add review</h3>
+    <div class="form-group">
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating">
+            <option value="0">0 - Very poor</option>
+            <option value="1">1 - Poor</option>
+            <option value="2">2 - Fair</option>
+            <option value="3">3 - Good</option>
+            <option value="4">4 - Very good</option>
+            <option value="5">5 - Excellent</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <textarea id="form-text" name="form-text" class="form form-spacing" placeholder="Share your thoughts..." required rows="4" cols="50" class="bio-box"></textarea>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Post review" class="form-button small-button">
+    </div>
+</form>
+<br><br>
+
+<script>
+    // Form visibility toggle
+    function showForm() {
+       var button = document.getElementById("add-review-button");
+       button.style.display = "none";
+       
+       var form = document.getElementById("add-review-form");
+       form.style.display = "block";
+   }
+</script>

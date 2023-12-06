@@ -1,0 +1,23 @@
+{% if friends > 0 and friend_content %}
+    <div class="feed friend-feed">
+        <h1 class="section-title text-gradient">Friends' top tunes</h1>
+        <div class="result-cards">
+            {% for result in friend_content %}
+                <div class="result-card">
+                    <a href="/content/{{result.content_type}}/{{result.content_id}}">
+                        <span class="link-span"></span>
+                    </a>
+
+                    <img class="image" src="{{result.image}}">
+
+                    <div class="content">
+                        <div class="title">{{result.name}}</div>
+                        <div class="text">
+                            <em>{{result.content_type}}</em>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+{% endif %}

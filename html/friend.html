@@ -1,0 +1,13 @@
+<a href="{{ url_for('display_profile', user_id=friend.id) }}">
+    <span class="link-span"></span>
+</a>
+
+<div class="profile-image card-profile-image search-profile-image" id="profile-pic-{{ friend.content_id }}"></div>
+
+<div class="content">
+    <div class="title">{{ friend.username }}</div>
+
+    <div class="text">
+        <em>{{ friend.content_type }}</em>
+    </div>
+</div>

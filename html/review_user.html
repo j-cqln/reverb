@@ -1,0 +1,40 @@
+<!-- reviews_user.html -->
+{% if reviews|length > 0 %}
+    {% for review in reviews %}
+    <a href="/user/{{ review.user.id }}" class="card-link">
+        <div class="review-card">
+            <div class="profile-image card-profile-image" id="profile-pic-{{ review.user.id }}"></div>
+            <div class="review-content">
+                <div>
+                    <span class="review-username"><strong>@{{ review.user.username }}</strong></span>
+                    <span class="review-rating">Rating: {{ review.rating }}/5</span>
+                </div>
+                <p class="review-text">
+                   {{ review.text }}
+                </p>
+
+                {% if review.user.id == current_user.id %}
+                    <form method="POST" action="{{ url_for('delete_review_card') }}">
+                        <input type="hidden" name="content_id" value="{{ content_id }}">
+                        <input type="hidden" name="content_type" value="{{ content_type }}">
+                        <button type="submit" class="delete-content-button delete-review-button">Delete</button>
+                    </form>
+                {% endif %}
+            </div>
+        </div>
+    </a>
+    {% endfor %}
+{% endif %}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    // Profile picture
+    $(document).ready(function() {
+        $(".review-card").each(function() {
+            // Assuming the username is prefixed with "@"
+            var username = $(this).find(".review-username").text().trim();
+            var firstLetter = username.charAt(1).toUpperCase();
+            $(this).find(".card-profile-image").text(firstLetter);
+        });
+    });
+</script>

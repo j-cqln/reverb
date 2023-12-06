@@ -1,0 +1,7 @@
+{% if results|length > 0 %}
+    {% for result in results %}
+        {% if result.content_type != "collection" %}
+            <iframe style="border-radius:12px" src="https://open.spotify.com/embed/{{result.content_type}}/{{result.content_id}}" width="100%" height="160" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+        {% endif %}
+    {% endfor %}
+{% endif %}

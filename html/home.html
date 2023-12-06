@@ -1,0 +1,138 @@
+<!-- Home page with feed -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reverb</title>
+        <link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='style.css')}}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    </head>
+    <body>
+        {% include "sidebar.html" %}
+        
+        <div class="main-content">
+            <p class="p-prompt">What's today's jam, {{current_user.username}}?</p>
+
+            <!-- Random top Spotify content & Reverb collection -->
+            <div class="feed random-feed">
+                <h1 class="section-title text-gradient">Discover new music</h1>
+
+                <!-- Slideshow of 5 random top Spotify songs -->
+                <div class="slideshow">
+                    <a class="slideshow-prev column" onclick="changeSlide(-1)">❮</a>
+    
+                    {% if slides|length > 0 %}
+                        {% for slide in slides %}
+                            <div class="slide column fade">
+                                <a class="link-a" href="/content/{{slide.content_type}}/{{slide.content_id}}">
+                                    <span class="link-span"></span>
+                                </a>
+
+                                <img class="slide-image" src="{{slide.image}}" alt="Slideshow image">
+                                <div class="slide-text">{{slide.name}}</div>
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+                    
+                    <a class="slideshow-next column" onclick="changeSlide(1)">❯</a>
+                </div>
+                    
+                <div class="div-slideshow-dots">
+                    {% if slides|length > 0 %}
+                        {% for slide in slides %}
+                            <span class="slideshow-dot" onclick="currentSlide('{{loop.index0}}')"></span> 
+                        {% endfor %}
+                    {% endif %}
+                </div>
+    
+                <br>
+    
+                <!-- Random album/collection -->
+                <div class="feed-cards">
+                    <a href="/content/{{album.content_type}}/{{album.content_id}}" class="feed-card column">
+                        <img class="image" src="{{album.image}}" alt="Album image">
+        
+                        <div class="content">
+                            <div class="title">{{album.name}}</div>
+                            <div class="text">{{ album.artists|join(", ") }}</div>
+                            <div class="text"><em>{{album.content_type}}</em></div>
+                        </div>
+                    </a>
+
+                    <br><br>
+                    
+                    {% if collection %}
+                        <a href="/content/collection/{{collection.id}}" class="feed-card column">
+                            <img class="image" src="{{collection.image}}" alt="Collection image">
+            
+                            <div class="content">
+                                <div class="title">{{collection.name}}</div>
+                                <div class="text">{{collection.content_type}}</div>
+                                <div class="text">by @{{collection.user.username}}</div>
+                            </div>
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+            <br>
+
+            <!-- Top Reverb content -->
+            {% if results %}
+                <div class="top-feed">
+                    <h1 class="section-title text-gradient">Trending now</h1>
+                    {% if results|length > 0 %}
+                        {% include "results.html" %}
+                    {% endif %}
+                </div>
+                <br><br>
+            {% endif %}
+
+            <!-- Top friends content -->
+            {% if friends > 0 %}
+                {% include "friend_content.html" %}
+            {% endif %}
+        </div>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+        </script>
+
+        <script>
+            // Slideshow previous/next functions
+
+            let slideIndex = 0;
+            showSlide(slideIndex);
+            
+            function changeSlide(n) {
+                showSlide(slideIndex += n);
+            }
+            
+            function currentSlide(n) {
+                showSlide(slideIndex = n);
+            }
+            
+            function showSlide(n) {
+                let i;
+                let slides = document.getElementsByClassName("slide");
+                let dots = document.getElementsByClassName("slideshow-dot");
+
+                if (n > slides.length - 1) {
+                    slideIndex = 0;
+                }
+
+                if (n < 0) {
+                    slideIndex = slides.length - 1;
+                }
+
+                for (i = 0; i < slides.length; i++) {
+                    slides[i].style.display = "none";  
+                }
+
+                for (i = 0; i < dots.length; i++) {
+                    dots[i].className = dots[i].className.replace(" active", "");
+                }
+
+                slides[slideIndex].style.display = "block";  
+                dots[slideIndex].className += " active";
+            }
+        </script>
+    </body>
+</html>

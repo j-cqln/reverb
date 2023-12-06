@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Reverb</title>
+		<link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='style.css')}}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	</head>
+
+	<body>
+		{% include "sidebar.html" %}
+
+    	{% include "modal.html" %}
+
+		<div class="main-content">
+			<div class="not-content-panels">
+				<div class="profile-header">
+					<div class="profile-photo">
+						<!-- Profile Photo -->
+						<div id="profile-image" class="profile-image no-select"></div>
+					</div>
+	
+					<div class="profile-details">
+						<h2 class="text-gradient" id="username">@{{ user.username }}</h2>
+	
+						{% if user.id != current_user.id %}
+							<form action="{{ url_for('send_friend_request', requested_id=user.id) }}" method="POST">
+								<button type="submit" id="add-friend-button" class="small-button action">Add friend</button>
+							</form>
+						{% endif %}
+	
+						{% if user.id == current_user.id %}
+							<div class="profile-buttons">
+								<form action="{{ url_for('edit_profile', user_id=current_user.id) }}" method="POST">
+									<button type="submit" id="edit-profile-button" class="small-button action">Edit profile</button>
+								</form>
+	
+								<form action="{{ url_for('logout') }}" method="POST">
+									<button type="submit" id="logout-button" class="small-button">Log out</button>
+								</form>
+							</div>
+						{% endif %}
+	
+						<div class="bio-box">
+							{% if user.bio %}
+								<p id="bio" class="bio">{{user.bio}}</p>
+							{% else %}
+								<p id="bio" class="no-bio">Nothing here yet...</p>
+							{% endif %}
+						</div>
+					</div>
+	
+					<div class="profile-stats">
+						{% if friends_count == 1 %}
+							<p><strong>{{ friends_count }}</strong> friend</p>
+						{% else %}
+							<p><strong>{{ friends_count }}</strong> friends</p>
+						{% endif %}
+
+						{% if reviews_count == 1 %}
+							<p><strong>{{ reviews_count }}</strong> review</p>
+						{% else %}
+							<p><strong>{{ reviews_count }}</strong> reviews</p>
+						{% endif %}
+					</div>
+				</div>
+	
+				<div class="favorites">
+					{% if user.favorite_track %}
+						<iframe class="favorite-track" src="https://open.spotify.com/embed/track/{{user.favorite_track}}" width="50%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+					{% endif %}
+	
+					{% if user.favorite_album %}
+						<iframe class="favorite-album" src="https://open.spotify.com/embed/album/{{user.favorite_album}}" width="50%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+					{% endif %}
+					
+					{% if user.favorite_genre %}
+						<p class="favorite-genre">{{user.favorite_genre}}</p>
+					{% endif %}
+				</div>
+	
+				<div class="tabs">
+					<div class="tab active-tab" id="reviewsTab">Reviews</div>
+					<div class="tab" id="collectionsTab">Collections</div>
+					<div class="tab" id="friendsTab">Friends</div>
+					
+					{% if user.id == current_user.id %}
+						<div class="tab" id="journalEntriesTab">Journal entries</div> 
+					{% endif %}
+				</div>
+			</div>
+
+			<div class="content-panels">
+				<div id="reviewsTabPanel" class="content-panel visible">
+					{% include "review_content.html" %}
+				</div>
+	
+				<div id="collectionsTabPanel" class="content-panel">
+					<!-- Collections content -->
+					<div class="result-cards-offset">
+						{% include "results.html" %}
+					</div>
+				</div>
+	
+				<div id="friendsTabPanel" class="content-panel">
+					<!-- Friends content -->
+					{% include "friends_tab.html" %}
+				</div>
+	
+				<div id="journalEntriesTabPanel" class="content-panel">
+					<!-- Journal entries content -->
+					{% include "journal_entries_content.html" %}
+				</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+		<script>
+			'use strict';
+
+			function updateHeight() {
+				var parent = document.documentElement;
+				var child1 = document.querySelector('.not-content-panels');
+				var child2 = document.querySelector('.content-panels');
+
+				function setContentPanelsHeight() {
+					var parentHeight = parent.scrollHeight;
+					var child1Height = child1.offsetHeight;
+					var child2Height = child2.offsetHeight;
+					var newChild2Height = Math.max(child2Height, parentHeight - child1Height);
+					child2.style.height = newChild2Height + 'px';
+				}
+
+				setContentPanelsHeight();
+
+				window.onresize = setContentPanelsHeight;
+			}
+
+			$(document).ready(function () {
+				$('.tab').on('click', function () {
+					var panelToShow = $(this).attr('id') + "Panel";
+
+					$('.active-tab').removeClass('active-tab');
+					$(this).addClass('active-tab');
+
+					$('.content-panel.visible').removeClass('visible');
+					$('#' + panelToShow).addClass('visible');
+
+					updateHeight();
+				});
+			});
+
+			var username = $('#username').text();
+			var first_letter = username.charAt(1).toUpperCase();
+			$('#profile-image').text(first_letter);
+
+			window.onload = updateHeight;
+
+      // Get the modal
+      var modal = document.getElementById('flashMessageModal');
+      
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName('close')[0];
+      
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function() {
+        modal.style.display = 'none';
+      }
+      
+      // Close the modal if the user clicks anywhere outside of it
+      window.onclick = function(event) {
+        if (event.target == modal) {
+          modal.style.display = 'none';
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', function() {
+      {% with messages = get_flashed_messages() %}
+         {% if messages %}
+            var flashMessages = '';
+            {% for message in messages %}
+            flashMessages += '<p>{{ message }}</p>';
+            {% endfor %}
+            
+            document.getElementById('flash-messages').innerHTML = flashMessages;
+            document.getElementById('flashMessageModal').style.display = 'block';
+         {% endif %}
+      {% endwith %}
+      });
+		</script>
+	</body>
+</html>

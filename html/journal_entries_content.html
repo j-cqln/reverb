@@ -1,0 +1,19 @@
+<!-- journal_entries_content.html -->
+{% if journal_entries|length > 0 %}
+    {% for entry in journal_entries %}
+    <a href="/content/{{entry.content_type}}/{{entry.content_id}}"  class="card-link">
+        <div class="journal-entry-card">
+            <img class="journal-content-image" src="{{entry.img}}">
+            <div class="journal-entry-content">
+                <div>
+                    <span class="entry-content-name"><strong>{{entry.name}}</strong> <em>{{entry.content_type}}</em></span>
+                </div>
+                <p class="journal-entry-text">
+                   {{ entry.text }}
+                </p>
+            </div>
+        </div>
+    {% endfor %}
+{% else %}
+    <p>No journal entries found.</p>
+{% endif %}

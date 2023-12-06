@@ -1,0 +1,30 @@
+<!-- Collection page to display collection content cards -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reverb</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('.static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+<body>
+    {% include "sidebar.html" %}
+
+    <div class="main-content">
+        <h2>Collection</h2>
+        <h3 class="content-subheader">{{collection.name}} by @{{collection.user.username}}</h3>
+        <i>{{collection.description}}</i>
+        <br><br>
+
+        {% if current_user_id == collection.user_id %}
+            <form action="" method="POST" id="delete-collection-form">
+                {{ deleteform.hidden_tag() }}
+                {{ deleteform.submit(class="form-button small-button action", id="delete-collection-button") }}
+            </form>
+        {% endif %}
+
+        <div id="search-results">
+            {% include "results.html" %}
+        </div>
+    </div>  
+</body>
+</html>

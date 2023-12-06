@@ -1,0 +1,45 @@
+<!-- Forms for creating collections and adding to existing collections -->
+<div id="collections-form">
+    <!-- Collections dropdown -->
+    {% if addform.dropdown.choices|length > 0 %}
+        <button type="button" class="form-button small-button" id="add-collection-button" onClick="showAddForm()">Add to collection +</button>
+        <form method="POST" id="add-collection-form">
+            {{ addform.hidden_tag() }}
+            {{ addform.dropdown.label }}<br>
+            {{ addform.dropdown(class="form-spacing drop-down") }}<br>
+            {{ addform.submit(class="form-button small-button") }}
+        </form>
+        <br>
+    {% endif %}
+
+    <!-- Collection creation -->
+    <button type="button" class="form-button small-button" id="create-collection-button" onClick="showCreateForm()">Create new collection +</button>
+    <form method="POST" id="create-collection-form">
+        {{ createform.hidden_tag() }}
+        {{ createform.name.label }}<br>
+        {{ createform.name(class="form form-spacing", cols=50, placeholder="A name for your collection") }}<br>
+        {{ createform.description.label }}<br>
+        {{ createform.description(class="form form-spacing", cols=50, rows=4, placeholder="About your collection") }}<br>
+        {{ createform.submit(class="form-button small-button") }}<br>
+    </form>
+</div>
+
+<script>
+    // Form visibility toggles
+
+     function showAddForm() {
+        var button = document.getElementById("add-collection-button");
+        button.style.display = "none";
+        
+        var form = document.getElementById("add-collection-form");
+        form.style.display = "block";
+    }
+
+    function showCreateForm() {
+        var button = document.getElementById("create-collection-button");
+        button.style.display = "none";
+        
+        var form = document.getElementById("create-collection-form");
+        form.style.display = "block";
+    }
+</script>

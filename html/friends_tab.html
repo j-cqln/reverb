@@ -1,0 +1,58 @@
+<div class="friends">
+    <!-- Friends -->
+    {% if friends %}
+        <h4 class="friends-category friends-category-offset">Friends</h4>
+        <div class="result-cards">
+            {% for friend, request_id in friends %}
+                <div class="result-card friend-card result-cards-offset" id="result-card">
+                    {% include "friend.html" %}
+
+                    {% if user.id == current_user.id %}
+                        <form action="{{ url_for('remove_friend', request_id=request_id) }}" method="post">
+                            <button type="submit" class="delete-content-button">Remove</button>
+                        </form>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    <!-- If this is the logged in user, display pending sent/received requests -->
+    {% if user.id == current_user.id %}
+        <!-- Pending requests sent -->
+        {% if pending_friends_sent %}
+            <h4 class="friends-category">Pending friend requests sent</h4>
+            <div class="result-cards">
+                {% for friend, request_id in pending_friends_sent %}
+                        <div class="result-card friend-card result-cards-offset" id="result-card">
+                            {% include "friend.html" %}
+
+                            <form action="{{ url_for('remove_friend', request_id=request_id) }}" method="post">
+                                <button type="submit" class="delete-content-button">Remove</button>
+                            </form>
+                        </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+
+        <!-- Pending requests received -->
+        {% if pending_friends_received %}
+            <h4 class="friends-category">Pending friend requests received</h4>
+            <div class="result-cards">
+                {% for friend, request_id in pending_friends_received %}
+                    <div class="result-card friend-card result-cards-offset" id="result-card">
+                        {% include "friend.html" %}
+
+                        <form action="{{ url_for('accept_friend_request', request_id=request_id) }}" method="post">
+                            <button type="submit" class="delete-content-button accept-friend-button">Accept</button>
+                        </form>
+
+                        <form action="{{ url_for('reject_friend_request', request_id=request_id) }}" method="post">
+                            <button type="submit" class="delete-content-button">Reject</button>
+                        </form>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endif %}
+</div>

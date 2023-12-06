@@ -1,0 +1,9 @@
+*.db
+*.venv
+*.env
+*.pyc
+*.DS_STORE
+*.cfg
+bin
+lib
+proj

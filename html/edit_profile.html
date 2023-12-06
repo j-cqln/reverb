@@ -1,0 +1,76 @@
+<!-- Page for profile editing -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Reverb</title>
+		<link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='style.css')}}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	</head>
+
+	<body>
+		{% include "sidebar.html" %}
+
+		<div class="main-content">
+			<div class="profile-header">
+				<div class="profile-photo">
+					<!-- Profile Photo -->
+					<div id="profile-image" class="profile-image no-select"></div>
+				</div>
+
+				<div class="profile-details">
+					<h2 class="text-gradient" id="username">@{{ user.username }}</h2>
+
+					<p class="section-prompt">Edit your profile</p>
+
+					<form action="" method="post">
+						{{ form.hidden_tag() }}
+		
+						<!-- Bio form -->
+						<p>
+							{{ form.bio.label }}<br>
+							{{ form.bio(class="form", cols=50, rows=4) }}<br>
+
+							{% for error in form.bio.errors %}
+								<span style="color: var(--accent);">[{{ error }}]</span>
+							{% endfor %}
+						</p>
+
+						<!-- Favorite genre form -->
+						<p>
+							{{ form.favorite_genre.label }}<br>
+							{{ form.favorite_genre(class="form", cols=50, rows=1) }}<br>
+
+							{% for error in form.favorite_genre.errors %}
+								<span style="color: var(--accent);">[{{ error }}]</span>
+							{% endfor %}
+						</p>
+
+						<!-- Favorite track/album -->
+						{% if user.favorite_track or user.favorite_album %}
+							<p>Update your favorite track or album through its content page:</p>
+							<div class="result-cards-offset">
+								{% include "results.html" %}
+							</div>
+						{% else %}
+							<p>Add your favorite track or album by searching for and favoriting it.</p>
+						{% endif %}
+
+						<!-- Submit changes -->
+						{{ form.submit(class="form-button small-button") }}
+					</form>
+				</div>
+			</div>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+		<script>
+			"use strict";
+
+			// Profile picture
+			var username = $("#username").text();
+			var first_letter = username.charAt(1).toUpperCase();
+			$("#profile-image").text(first_letter);
+		</script>
+	</body>
+</html>

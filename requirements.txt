@@ -1,0 +1,7 @@
+flask
+flask-sqlalchemy
+sqlalchemy
+python-dotenv
+requests
+wtforms
+flask_wtf

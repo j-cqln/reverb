@@ -1,0 +1,55 @@
+<!-- Responsive sidebar for authentication screens -->
+<div class="sidebar" id="sidebar">
+    <div>
+        <div class="sidebar-title">
+            <a class="link-a" href="{{  url_for('index')  }}">
+                <img class="app-logo" src="/static/assets/app/logo.png"><p class="app-name">Reverb</p>
+                <a href="javascript:void(0)" class="close-sidebar" onclick="closeSidebar()">×</a>
+            </a>
+        </div>
+
+        <a class="sidebar-link" href="/login">log in</a>
+        <a class="sidebar-link" href="/register">sign up</a>
+    </div>
+</div>
+
+<button class="open-sidebar" onclick="openSidebar()">☰</button>
+
+<script>
+    // Opening sidebar
+    function openSidebar() {
+        document.getElementById("sidebar").style.display = "flex";
+
+        if (window.innerWidth <= 1250) {
+            document.getElementById("sidebar").style.width = "250px";
+            document.querySelector(".main-content").style.marginLeft = "35px";
+        } else {
+            document.getElementById("sidebar").style.width = "15%";
+            document.querySelector(".main-content").style.marginLeft = "15%";
+        }
+    }
+    
+    // Closing sidebar
+    function closeSidebar() {
+        document.getElementById("sidebar").style.display = "none";
+        document.getElementById("sidebar").style.width = "0";
+        document.querySelector(".main-content").style.marginLeft = "35px";
+    }
+
+    // Check sidebar open/close based on window size
+    function checkSidebar() {
+        if (window.innerWidth <= 1250 && document.getElementById("sidebar").style.display != "none") {
+            closeSidebar();
+
+            // To-do: differentiate manual and auto close
+            document.getElementById("sidebar").style.width = "250px";
+        }
+
+        if (window.innerWidth > 1250 && document.getElementById("sidebar").style.display == "none" && document.getElementById("sidebar").style.width != "0") {
+            openSidebar();
+        }
+    }
+
+    // Check sidebar on window resize
+    window.addEventListener('resize', checkSidebar);
+</script>

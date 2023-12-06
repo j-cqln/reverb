@@ -1,0 +1,117 @@
+<!-- Front page of Reverb -->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Reverb</title>
+		<link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='style.css')}}">
+		<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+	</head>
+
+	<body class="front-page">
+		<!-- Top bar -->
+		<div id="top-bar">
+			<a class="link-a" href="{{  url_for('index')  }}"><div class="top-bar-title"><img class="top-bar-app-logo" src="/static/assets/app/logo.png"><p class="top-bar-app-name">Reverb</p></div></a>
+
+			<div class="front-page-buttons">
+				<a href="{{  url_for('register')  }}"><button class="top-bar-button button action" id="create">sign up</button></a>
+				<a href="{{  url_for('login')  }}"><button class="top-bar-button button action" id="create">log in</button></a>
+			</div>
+		</div>
+
+		<!-- Intro -->
+		<div id="intro" class="front-page-content front-page-column">
+			<!-- Intro text -->
+			<div class="intro-text">
+				<h1 class="hero-text">
+					Feel the
+					<br>
+					<span class="text-gradient" style="margin-left: -5px; font-size: 8rem;">reverb</span>
+				</h1>
+
+				<p class="hero-description">
+					Find your sound. Find your people.
+				</p>
+
+				<p class="hero-description">
+					Join a community of music nerds.
+				</p>
+
+				<div class="front-page-buttons">
+					<a href="#hear-more"><button class="button info">hear more</button></a>
+					<a href="{{  url_for('register')  }}"><button class="button action" id="create">get started</button></a>
+				</div>
+			</div>
+
+			<!-- Intro image -->
+			<div class="intro-image">
+				<img class="hero-image" src="/static/assets/app/intro.png">
+			</div>
+		</div>
+
+		<!-- Anchor tag for info -->
+		<div id="hear-more"></div>
+		<br>
+
+		<!-- Demo -->
+		<div id="demo" class="front-page-content front-page-column">
+			<!-- Demo visuals -->
+			<div class="front-page-column-left demo-image">
+				<!-- SZA - SOS -->
+				<iframe class="demo-track" src="https://open.spotify.com/embed/track/5xMw6qCcpd2gBXPGTegC4W" width="50%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+
+				<div class="review-card demo-review">
+					<img class="review-content-image" src="/static/assets/app/user.png">
+					<div class="review-content">
+						<div>
+							<span class="review-content-name"><strong>SOS</strong> <em>track</em></span>
+							<span class="review-rating">Rating: 5/5</span>
+						</div>
+						<p class="review-text">
+							Here's what I think...
+						</p>
+					</div>
+				</div>
+
+				<!-- The Strokes - Is This It -->
+				<iframe class="demo-album" src="https://open.spotify.com/embed/album/2k8KgmDp9oHrmu0MIj4XDE" width="50%" height="352" frameBorder="0" allowfullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
+			</div>
+
+			<!-- Demo info -->
+			<div class="front-page-column-right">
+				<h1 class="demo-text">
+					Listen
+					<br>
+					<span class="text-gradient" style="font-size: 4rem;">discover</span>
+					<br>
+					critique
+					<br>
+					<span class="text-gradient" style="font-size: 4rem;">curate</span>
+				</h1>
+
+				<p class="demo-description">
+					& share with friends
+				</p>
+			</div>
+		</div>
+
+		{% include "footer.html" %}
+
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+		<script>
+			// Top bar sticky/scroll
+			window.onscroll = function() {navbarSticky()};
+
+			var navbar = document.getElementById("top-bar");
+			var sticky = navbar.offsetTop;
+
+			function navbarSticky() {
+				if (window.pageYOffset >= sticky) {
+				navbar.classList.add("sticky")
+				} else {
+					navbar.classList.remove("sticky");
+				}
+			}
+		</script>
+	</body>
+</html>

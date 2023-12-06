@@ -1,0 +1,119 @@
+<!-- Search page with dynamic results updating -->
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Reverb</title>
+        <link rel="stylesheet" type="text/css" href="{{url_for('.static', filename='style.css')}}">
+        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    </head>
+    <body>
+        {% include "sidebar.html" %}
+
+        <div class="main-content">
+            <p class="p-prompt">Find your next soundtrack</p>
+
+            <!-- Search bar -->
+            <form action="search" method="get" id="search-form">
+                <div class="div-search-form">
+                    <input class="search-box" type="text" id="search-box" value="{{query}}" placeholder="What's up next?">
+                    <button class="search-button" type="button" id="search-button">
+                        <img src="/static/assets/app/search.png" width="24px" height="24px" style="padding: 1px 1px 2px 1px;">
+                    </button>
+                </div>
+            </form>
+
+            <br>
+
+            <!-- Search filters/categories -->
+            <div class="search-categories">
+                <a class="search-category no-select search-category-selected" id="filter-tracks" type="checkbox">tracks</a>
+                <a class="search-category no-select search-category-selected" id="filter-albums" type="checkbox">albums</a>
+                <a class="search-category no-select search-category-selected" id="filter-users" type="checkbox">users</a>
+                <a class="search-category no-select search-category-selected" id="filter-collections" type="checkbox">collections</a>
+            </div>
+
+            <br>
+
+            <!-- Search results -->
+            <div id="search-results">
+                <div class="result-cards">
+                    {% include "search_results.html" %}
+                </div>
+            </div>
+        </div>
+    </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+    </script>
+
+    <script>
+        "use strict";
+
+        // Update search results
+        function handleResponse(response) {
+            $("#search-results").html(response);
+        }
+
+        let request = null;
+
+        // Get search results based on current query and selected filters/categories
+        function getResults() {
+            let searchQuery = $("#search-box").val();
+            searchQuery = encodeURIComponent(searchQuery);
+
+            let tracks = "false";
+            let albums = "false";
+            let users = "false";
+            let collections = "false";
+
+            if ($("#filter-tracks").hasClass("search-category-selected"))
+                tracks = "true";
+
+            if ($("#filter-albums").hasClass("search-category-selected"))
+                albums = "true";
+
+            if ($("#filter-users").hasClass("search-category-selected"))
+                users = "true";
+
+            if ($("#filter-collections").hasClass("search-category-selected"))
+                collections = "true";
+
+            let url = "/search_results?query=" + searchQuery + "&track=" + tracks + "&album=" + albums + "&user=" + users + "&collection=" + collections;
+
+            if (request != null)
+               request.abort();
+
+            request = $.ajax(
+               {
+                  type: "GET",
+                  url: url,
+                  success: handleResponse
+               }
+            );
+        }
+        
+        // Setup updating parts of the form
+        function setup() {
+            $("#search-box").on("input", getResults);
+
+            $("a.search-category").on("click", function() {
+                $(this).toggleClass("search-category-selected");
+                getResults();
+            });
+
+            $("#search-button").on("click", function() {
+                getResults();
+            });
+
+            $("#search-form").submit(function() {
+                getResults();
+                return false;
+            });
+
+            if ($("#search-box").val())
+                getResults();
+        }
+
+        $("document").ready(setup);
+    </script>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+    <head>
+      <title>Reverb</title>
+      <link rel="stylesheet"  type="text/css" href="{{url_for('.static', filename='style.css')}}">
+      <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    </head>
+
+    <body>
+        {% include "sidebar.html" %}
+
+        <div class="main-content">
+            <h2>Content</h2>
+
+            <!-- The content item -->
+            <div id="content-collection">
+                <div id="contents">
+                    {% include "content_results.html" %}
+                </div>
+            </div>
+
+            <!-- Favoriting/unfavoriting button for tracks/albums -->
+            {% if content_type == "track" or content_type == "album" %}
+                <form method="post" action="/update_favorite">
+                    <input type="hidden" name="content_id" value="{{ content_id }}">
+                    <input type="hidden" name="content_type" value="{{ content_type }}">
+
+                    {% if (content_type == "track" and current_user.favorite_track == content_id) or (content_type == "album" and current_user.favorite_album == content_id) %}
+                        <button type="submit" class="form-button small-button">Unfavorite this</button>
+                    {% else %}
+                        <button type="submit" class="form-button small-button">Favorite this</button>
+                    {% endif %}
+                </form>
+            {% endif %}
+
+            <!-- Create/add to collections etc. -->
+            <div id="collections">
+                <h2>Collections</h2>
+                {% include "collections_form.html" %}
+            </div>
+
+            <!-- Existing reviews -->
+            <div id="reviews">
+                <h2>Reviews</h2>
+                {% include "review_user.html" %}
+            </div>
+        <br>
+
+        <!-- Review form -->
+        <div id="review-form">
+            {% include "review_form.html" %}
+        </div>
+
+        <!-- Journal Panel -->
+        <div id="journal">
+            <h2>Journal entries</h2>
+            <button class="form-button small-button" id="toggle-journal">Toggle journal</button>
+            <div class="journal-panel" id="journal-panel" style="display:none;">
+                <div id="journal-entries">
+                </div>
+                <div id="journal-entry-form">
+                    <form method="post" action="/add_journal_entry">
+                        <input type="hidden" name="content_id" value="{{ content_id }}">
+                        <input type="hidden" name="content_type" value="{{ content_type }}">
+                        <textarea id="form-text" class="form form-spacing" name="entry_text" rows="4" cols="50" class="bio-box" placeholder="Write your journal entry here..."></textarea>
+                        <br>
+                        <button type="submit" class="form-button small-button">Add entry</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+      </div>
+      <br><br>
+
+    </div> 
+
+    </body>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js">
+    </script>
+    <script>
+        "use strict";
+
+        // Toggle journal panel visibility
+        document.getElementById("toggle-journal").addEventListener("click", function() {
+            var panel = document.getElementById("journal-panel");
+            if (panel.style.display === "none") {
+                panel.style.display = "block";
+                loadJournalEntries();
+            } else {
+                panel.style.display = "none";
+            }
+        });
+        
+        function toggleAndLoadJournalEntries() {
+        var panel = document.getElementById("journal-panel");
+        if (panel.style.display === "none" || panel.style.display === "") {
+            panel.style.display = "block";
+            loadJournalEntries(); // Load journal entries
+        } else {
+            panel.style.display = "none";
+        }
+    }
+        // Load journal entries using AJAX
+        function loadJournalEntries() {
+            let contentId = "{{ content_id }}"; // Replace with dynamic content ID
+            $.ajax({
+                url: '/get_journal_entries/' + contentId,
+                type: 'GET',
+                success: function(entries) {
+                    var entriesDiv = document.getElementById("journal-entries");
+                    entriesDiv.innerHTML = ""; // Clear existing entries
+                    entries.forEach(function(entry) {
+                        var entryDiv = document.createElement("div");
+                        entryDiv.className = "journal-entry";
+                        entryDiv.innerHTML = "<p>" + entry.text + "</p>";
+
+                        var deleteForm = document.createElement("form");
+                        deleteForm.method = "POST";
+                        deleteForm.action = "{{ url_for('delete_journal_entry') }}";
+                        deleteForm.innerHTML = `
+                            <input type="hidden" name="content_id" value="${contentId}">
+                            <input type="hidden" name="content_type" value="{{ content_type }}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        `;
+                        entryDiv.appendChild(deleteForm);
+
+                        entriesDiv.appendChild(entryDiv);
+                    });
+                }
+            });
+        }
+
+        $(document).ready(function() {
+            let contentId = "{{ content_id }}"; // Replace with dynamic content ID
+            $('#journal-entry-form').on('submit', function(e) {
+                e.preventDefault(); // Prevent the default form submission
+                var formData = {
+                    content_id: $('input[name="content_id"]').val(),
+                    content_type: $('input[name="content_type"]').val(),
+                    entry_text: $('textarea[name="entry_text"]').val()
+                };
+                $.ajax({
+                    url: '/add_journal_entry',
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        loadJournalEntries(); // Reload the journal entries
+                        // Optional: Clear the textarea after submission
+                        $('textarea[name="entry_text"]').val('');
+                    },
+                    error: function() {
+                        // Handle errors here
+                    }
+                });
+            });
+        });
+
+        function setup() {
+            $("#search-box").on("input", getResults);
+        }
+
+        $("document").ready(setup);
+    </script>
+</html>
