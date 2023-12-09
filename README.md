@@ -15,6 +15,10 @@ A music-sharing social media app
 
 ## Getting started
 
+### Online
+
+You can find Reverb online [here](https://reverb.pythonanywhere.com)!
+
 ### Running locally
 
 Follow the [Spotify API guide](https://developer.spotify.com/documentation/web-api) to get credentials (`CLIENT_ID` and `CLIENT_SECRET`). When creating an app on the Spotify dashboard, set `Redirect URI` to `http://127.0.0.1/`. Create a `.env` file in the root directory. In this file, set `CLIENT_ID`, `CLIENT_SECRET`, and define `SECRET_KEY`, which can be any value.
