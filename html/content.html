@@ -9,6 +9,8 @@
     <body>
         {% include "sidebar.html" %}
 
+        {% include "modal.html" %}
+
         <div class="main-content">
             <h2>Content</h2>
 
@@ -44,34 +46,34 @@
                 <h2>Reviews</h2>
                 {% include "review_user.html" %}
             </div>
-        <br>
+        
+            <br>
 
-        <!-- Review form -->
-        <div id="review-form">
-            {% include "review_form.html" %}
-        </div>
+            <!-- Review form -->
+            <div id="review-form">
+                {% include "review_form.html" %}
+            </div>
 
-        <!-- Journal Panel -->
-        <div id="journal">
-            <h2>Journal entries</h2>
-            <button class="form-button small-button" id="toggle-journal">Toggle journal</button>
-            <div class="journal-panel" id="journal-panel" style="display:none;">
-                <div id="journal-entries">
-                </div>
-                <div id="journal-entry-form">
-                    <form method="post" action="/add_journal_entry">
-                        <input type="hidden" name="content_id" value="{{ content_id }}">
-                        <input type="hidden" name="content_type" value="{{ content_type }}">
-                        <textarea id="form-text" class="form form-spacing" name="entry_text" rows="4" cols="50" class="bio-box" placeholder="Write your journal entry here..."></textarea>
-                        <br>
-                        <button type="submit" class="form-button small-button">Add entry</button>
-                    </form>
+            <!-- Journal Panel -->
+            <div id="journal">
+                <h2>Journal entries</h2>
+                <button class="form-button small-button" id="toggle-journal">Toggle journal</button>
+                <div class="journal-panel" id="journal-panel" style="display:none;">
+                    <div id="journal-entries">
+                    </div>
+                    <div id="journal-entry-form">
+                        <form method="post" action="/add_journal_entry">
+                            <input type="hidden" name="content_id" value="{{ content_id }}">
+                            <input type="hidden" name="content_type" value="{{ content_type }}">
+                            <textarea id="form-text" class="form form-spacing" name="entry_text" rows="4" cols="50" class="bio-box" placeholder="Write your journal entry here..."></textarea>
+                            <br>
+                            <button type="submit" class="form-button small-button">Add entry</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-      </div>
-      <br><br>
-
+        <br><br>
     </div> 
 
     </body>
@@ -93,14 +95,15 @@
         });
         
         function toggleAndLoadJournalEntries() {
-        var panel = document.getElementById("journal-panel");
-        if (panel.style.display === "none" || panel.style.display === "") {
-            panel.style.display = "block";
-            loadJournalEntries(); // Load journal entries
-        } else {
-            panel.style.display = "none";
+            var panel = document.getElementById("journal-panel");
+            if (panel.style.display === "none" || panel.style.display === "") {
+                panel.style.display = "block";
+                loadJournalEntries(); // Load journal entries
+            } else {
+                panel.style.display = "none";
+            }
         }
-    }
+
         // Load journal entries using AJAX
         function loadJournalEntries() {
             let contentId = "{{ content_id }}"; // Replace with dynamic content ID
@@ -121,7 +124,7 @@
                         deleteForm.innerHTML = `
                             <input type="hidden" name="content_id" value="${contentId}">
                             <input type="hidden" name="content_type" value="{{ content_type }}">
-                            <button type="submit" class="btn btn-danger">Delete</button>
+                            <button type="submit" class="delete-content-button">Delete</button>
                         `;
                         entryDiv.appendChild(deleteForm);
 
@@ -161,5 +164,38 @@
         }
 
         $("document").ready(setup);
+
+        // Get the modal
+        var modal = document.getElementById('flashMessageModal');
+        
+        // Get the <span> element that closes the modal
+        var span = document.getElementsByClassName('close')[0];
+        
+        // When the user clicks on <span> (x), close the modal
+        span.onclick = function() {
+            modal.style.display = 'none';
+        }
+        
+        // Close the modal if the user clicks anywhere outside of it
+        window.onclick = function(event) {
+            if (event.target == modal) {
+            modal.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                var flashMessages = '';
+                {% for message in messages %}
+                flashMessages += '<p>{{ message }}</p>';
+                {% endfor %}
+                
+                document.getElementById('flash-messages').innerHTML = flashMessages;
+                document.getElementById('flashMessageModal').style.display = 'block';
+                $('#flashMessageModal').addClass('content-page-modal');
+            {% endif %}
+        {% endwith %}
+        });
     </script>
 </html>
